@@ -8,10 +8,15 @@
 </head>
 <body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
 
-  <header class="bg-blue-700 text-white py-6 shadow">
+  <header class="bg-blue-700 text-white py-6 shadow relative">
     <div class="container mx-auto px-4">
       <h1 class="text-3xl font-bold">InfraSight</h1>
       <p class="text-sm text-blue-200">System Intelligence Dashboard</p>
+    </div>
+    <div class="absolute top-4 right-4">
+      <a href="/login" class="bg-white text-blue-700 font-semibold px-4 py-2 rounded shadow hover:bg-blue-100 transition">
+        Admin Login
+      </a>
     </div>
   </header>
 
@@ -24,7 +29,7 @@
         <div class="bg-blue-50 p-4 rounded shadow-sm">
           <h3 class="font-semibold text-blue-700">🚀 Feature Preview</h3>
           <ul class="list-disc ml-5 mt-2 text-sm">
-            <li>CPU & memory stats from `psutil`</li>
+            <li>CPU & memory stats from <code>psutil</code></li>
             <li>Log and error tracking</li>
             <li>Simple API integrations</li>
             <li>Interactive data visualizations</li>
@@ -37,7 +42,7 @@
             <li>Flask (Python)</li>
             <li>Render (Hosting)</li>
             <li>TailwindCSS</li>
-            <li>System Utilities (`psutil`, etc.)</li>
+            <li>System Utilities (<code>psutil</code>, etc.)</li>
           </ul>
         </div>
       </div>
