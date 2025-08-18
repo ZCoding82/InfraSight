@@ -1,21 +1,30 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session
 import psutil
 import datetime
+import os
 from werkzeug.security import check_password_hash, generate_password_hash
+from dotenv import load_dotenv
+
+# Load environment variables from .env file (if present)
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"  # 🔒 change this in production
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "fallback_secret_key")  # 🔐 Set this in production!
 
-# Dummy admin credentials
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD_HASH = generate_password_hash("password123")  # hashed password
+# Admin credentials (from environment)
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD_HASH = os.environ.get("ADMIN_PASSWORD_HASH", generate_password_hash("password123"))
 
-# Home
+# ────────────────────────────────
+# ROUTES
+# ────────────────────────────────
+
+# Homepage
 @app.route("/")
 def dashboard():
     return render_template("index.html")
 
-# System API
+# System info API
 @app.route("/api/system")
 def get_system_info():
     cpu_percent = psutil.cpu_percent(interval=1)
@@ -39,7 +48,7 @@ def get_system_info():
 
     return jsonify(system_data)
 
-# Login Page
+# Admin Login
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -48,16 +57,16 @@ def login():
         if username == ADMIN_USERNAME and check_password_hash(ADMIN_PASSWORD_HASH, password):
             session["logged_in"] = True
             return redirect(url_for("admin_dashboard"))
-        return render_template("login.html", error="Invalid credentials")
+        return render_template("login.html", error="Invalid username or password.")
     return render_template("login.html")
 
-# Logout
+# Admin Logout
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("login"))
 
-# Admin Dashboard (Protected)
+# Admin-only dashboard
 @app.route("/admin")
 def admin_dashboard():
     if not session.get("logged_in"):
@@ -67,7 +76,9 @@ def admin_dashboard():
     mem = psutil.virtual_memory()
     disk = psutil.disk_usage('/')
     return render_template("admin.html", cpu=cpu, mem=mem, disk=disk)
-    
-# Local debug only
+
+# ────────────────────────────────
+# Run Server (Local Only)
+# ────────────────────────────────
 if __name__ == "__main__":
     app.run(debug=True)
