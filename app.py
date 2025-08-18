@@ -9,6 +9,11 @@ app = Flask(__name__)
 def dashboard():
     return render_template("index.html")
 
+# Route: System Monitoring Page
+@app.route("/system")
+def system_page():
+    return render_template("system.html")
+
 # Route: API for System Information
 @app.route("/api/system")
 def get_system_info():
