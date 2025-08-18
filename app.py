@@ -4,19 +4,19 @@ import datetime
 
 app = Flask(__name__)
 
-# Route for main dashboard
+# Route: Main Dashboard Page
 @app.route("/")
 def dashboard():
     return render_template("index.html")
 
-# API route: System info
+# Route: API for System Information
 @app.route("/api/system")
 def get_system_info():
     cpu_percent = psutil.cpu_percent(interval=1)
     memory = psutil.virtual_memory()
     disk = psutil.disk_usage('/')
 
-    data = {
+    system_data = {
         "cpu_percent": cpu_percent,
         "memory": {
             "total": memory.total,
@@ -30,8 +30,9 @@ def get_system_info():
         },
         "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
-    return jsonify(data)
 
-# Run the Flask app
+    return jsonify(system_data)
+
+# Entry point
 if __name__ == "__main__":
     app.run(debug=True)
