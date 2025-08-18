@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>System Metrics Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CDN for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 50px;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #888;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container">
+        <h1 class="text-center mb-4">📊 System Monitoring Dashboard</h1>
+        
+        <div id="system-info" class="row text-center">
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">CPU Usage</h5>
+                        <p id="cpu" class="card-text fs-4">--%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Memory Usage</h5>
+                        <p id="memory" class="card-text fs-4">--%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Disk Usage</h5>
+                        <p id="disk" class="card-text fs-4">--%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <button class="btn btn-primary" onclick="loadSystemInfo()">🔄 Refresh</button>
+            <p id="timestamp" class="mt-3 text-muted">Last updated: --</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Built by <strong>Md.Rafiquzzaman</strong> using Flask, Render, and Visual Studio Code</p>
+    </div>
+
+    <!-- Script to fetch system info -->
+    <script>
+        function formatBytes(bytes) {
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            if (bytes === 0) return '0 Byte';
+            const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+        }
+
+        function loadSystemInfo() {
+            fetch('/api/system')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById("cpu").innerText = `${data.cpu_percent}%`;
+                    document.getElementById("memory").innerText = `${data.memory.percent}% (${formatBytes(data.memory.used)} of ${formatBytes(data.memory.total)})`;
+                    document.getElementById("disk").innerText = `${data.disk.percent}% (${formatBytes(data.disk.used)} of ${formatBytes(data.disk.total)})`;
+                    document.getElementById("timestamp").innerText = `Last updated: ${data.timestamp}`;
+                })
+                .catch(err => {
+                    alert("Failed to load system info.");
+                    console.error(err);
+                });
+        }
+
+        // Auto-load on page open
+        window.onload = loadSystemInfo;
+    </script>
+</body>
+</html>
