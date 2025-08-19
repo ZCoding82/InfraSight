@@ -39,13 +39,13 @@ Use the credentials below to access the admin dashboard:
 
 ## 🚦 Project Structure
 InfraSight/
-├── app.py                    # Main Flask application with routes and logic
-├── requirements.txt          # Python dependencies
-├── .env                      # Environment variables (secret key, admin credentials)
-├── templates/
-│   ├── index.html            # Public homepage
-│   ├── login.html            # Admin login form
-│   └── admin.html            # Admin-only dashboard
+- app.py                    # Main Flask application with routes and logic
+- requirements.txt          # Python dependencies
+- .env                      # Environment variables (secret key, admin credentials)
+- templates/
+│   ── index.html            # Public homepage
+│   ── login.html            # Admin login form
+│   ── admin.html            # Admin-only dashboard
 ├── static/                   # (Optional) Static files like CSS or JS
 └── README.md                 # Project documentation
 
