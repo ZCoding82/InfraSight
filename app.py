@@ -16,7 +16,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "fallback_secret_key")  # ✅ Set securely in Render
 
 # Admin credentials (username + hashed password from environment)
-ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "Md.Rafiquzzaman")
 ADMIN_PASSWORD_HASH = os.environ.get(
     "ADMIN_PASSWORD_HASH",
     generate_password_hash("password123")  # fallback hash (for local dev only)
