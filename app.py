@@ -5,15 +5,22 @@ import os
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# ───────────────────────────────────────
+# Load environment variables securely
+# ───────────────────────────────────────
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET_KEY", "fallback_secret_key")
 
-# Admin credentials
+# Flask secret key (for sessions/cookies)
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "fallback_secret_key")  # ✅ Set securely in Render
+
+# Admin credentials (username + hashed password from environment)
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
-ADMIN_PASSWORD_HASH = os.environ.get("ADMIN_PASSWORD_HASH", generate_password_hash("password123"))
+ADMIN_PASSWORD_HASH = os.environ.get(
+    "ADMIN_PASSWORD_HASH",
+    generate_password_hash("password123")  # fallback hash (for local dev only)
+)
 
 # ─────────────────────────────
 # ROUTES
@@ -54,9 +61,11 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+
         if username == ADMIN_USERNAME and check_password_hash(ADMIN_PASSWORD_HASH, password):
             session["logged_in"] = True
             return redirect(url_for("admin_dashboard"))
+
         return render_template("login.html", error="Invalid username or password.")
     return render_template("login.html")
 
@@ -75,6 +84,7 @@ def admin_dashboard():
     cpu = psutil.cpu_percent()
     mem = psutil.virtual_memory()
     disk = psutil.disk_usage('/')
+
     return render_template("admin.html", cpu=cpu, mem=mem, disk=disk)
 
 # ─────────────────────────────
