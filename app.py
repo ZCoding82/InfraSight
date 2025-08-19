@@ -13,13 +13,13 @@ load_dotenv()
 app = Flask(__name__)
 
 # Flask secret key (for sessions/cookies)
-app.secret_key = os.environ.get("FLASK_SECRET_KEY", "fallback_secret_key")  # ✅ Set securely in Render
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "fallback_secret_key")
 
-# Admin credentials (username + hashed password from environment)
-ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "Md.Rafiquzzaman")
+# Admin credentials from .env
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
 ADMIN_PASSWORD_HASH = os.environ.get(
     "ADMIN_PASSWORD_HASH",
-    generate_password_hash("password123")  # fallback hash (for local dev only)
+    generate_password_hash("password123")  # fallback only
 )
 
 # ─────────────────────────────
@@ -59,14 +59,20 @@ def get_system_info():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form["username"]
+        username = request.form["username"].strip()
         password = request.form["password"]
+
+        # Optional debug (comment out in production)
+        # print("Env Username:", ADMIN_USERNAME)
+        # print("Input Username:", username)
+        # print("Password Valid:", check_password_hash(ADMIN_PASSWORD_HASH, password))
 
         if username == ADMIN_USERNAME and check_password_hash(ADMIN_PASSWORD_HASH, password):
             session["logged_in"] = True
             return redirect(url_for("admin_dashboard"))
 
         return render_template("login.html", error="Invalid username or password.")
+
     return render_template("login.html")
 
 # Admin Logout
