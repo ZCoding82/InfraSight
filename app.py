@@ -5,26 +5,26 @@ import os
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv
 
-# Load environment variables from .env file (if present)
+# Load environment variables from .env file
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET_KEY", "fallback_secret_key")  # 🔐 Set this in production!
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "fallback_secret_key")
 
-# Admin credentials (from environment)
+# Admin credentials
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
 ADMIN_PASSWORD_HASH = os.environ.get("ADMIN_PASSWORD_HASH", generate_password_hash("password123"))
 
-# ────────────────────────────────
+# ─────────────────────────────
 # ROUTES
-# ────────────────────────────────
+# ─────────────────────────────
 
-# Homepage
+# Home Page
 @app.route("/")
 def dashboard():
     return render_template("index.html")
 
-# System info API
+# API Route: System Information
 @app.route("/api/system")
 def get_system_info():
     cpu_percent = psutil.cpu_percent(interval=1)
@@ -66,7 +66,7 @@ def logout():
     session.clear()
     return redirect(url_for("login"))
 
-# Admin-only dashboard
+# Admin Dashboard (protected)
 @app.route("/admin")
 def admin_dashboard():
     if not session.get("logged_in"):
@@ -77,8 +77,8 @@ def admin_dashboard():
     disk = psutil.disk_usage('/')
     return render_template("admin.html", cpu=cpu, mem=mem, disk=disk)
 
-# ────────────────────────────────
-# Run Server (Local Only)
-# ────────────────────────────────
+# ─────────────────────────────
+# Main Entry Point
+# ─────────────────────────────
 if __name__ == "__main__":
     app.run(debug=True)
